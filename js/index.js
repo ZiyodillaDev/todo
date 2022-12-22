@@ -25,8 +25,8 @@ const renderTodo = (array, node) => {
 
     newSpan.textContent = item.text;
     newInput.type = "checkbox";
-    newDeleteButton.textContent = "DELETE";
-    newEditButton.textContent = "EDIT";
+    newDeleteButton.textContent = "DELETE❌";
+    newEditButton.textContent = "EDIT✏";
 
     newDeleteButton.dataset.todoID = item.id;
     newEditButton.dataset.todoId = item.id;
