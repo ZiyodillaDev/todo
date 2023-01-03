@@ -1,126 +1,167 @@
-const elForm = document.querySelector(".js-form");
-const elInput = document.querySelector(".js-input");
-const elList = document.querySelector(".js-list");
-let spanAll = document.querySelector(".js-span-all");
-let spanCompleted = document.querySelector(".js-span-completed");
-let spanUmCompleted = document.querySelector(".js-span-un-completed");
-const todos = [];
-let checkedInput = 0;
-const renderTodo = (array, node) => {
-  node.innerHTML = "";
-  array.forEach((item) => {
-    const newItem = document.createElement("li");
-    const newSpan = document.createElement("span");
-    const newInput = document.createElement("input");
-    const newDeleteButton = document.createElement("button");
-    const newEditButton = document.createElement("button");
 
-    newItem.setAttribute("class", "list-group-item d-flex align-items-center m-auto w-50");
+const elForm =document.querySelector('.js-form')
+const elInput =document.querySelector('.js-input')
+const elbtn =document.querySelector('.js-btn')
+const elList =document.querySelector('.list')
+const elbtngroup =document.querySelector('.btn-group')
+const comletedspan =elbtngroup.children[1].children[0]
+const unComletedspan =elbtngroup.children[2].children[0]
+const allBtn =elbtngroup.children[0]
+const allDelade =document.querySelector('.js-delateall')
+const localData =JSON.parse(window.localStorage.getItem('todos'))
 
-    newSpan.setAttribute("class", "flex-grow-1 mx-4");
-    newInput.setAttribute("class", "form-check-input m-0 js-check");
-    newItem.appendChild(newEditButton);
-    newEditButton.setAttribute("class", "btn btn-warning me-3 js-edit-btn");
-    newDeleteButton.setAttribute("class", "btn btn-danger js-delete-btn");
-
-    newSpan.textContent = item.text;
-    newInput.type = "checkbox";
-    newDeleteButton.textContent = "DELETE❌";
-    newEditButton.textContent = "EDIT✏";
-
-    newDeleteButton.dataset.todoID = item.id;
-    newEditButton.dataset.todoId = item.id;
-    newInput.dataset.todoId = item.id;
-
-    newItem.appendChild(newInput);
-    newItem.appendChild(newSpan);
-    newItem.appendChild(newEditButton);
-    newItem.appendChild(newDeleteButton);
-    if (item.isCompleted) {
-      newInput.checked = true;
-      newSpan.style.textDecoration = "line-through";
+const elMode =document.querySelector('.js-mode')
+let theme =false
+elMode.addEventListener('click', ()=>{
+    theme =!theme
+    console.log(theme);
+    const bg =theme ? 'dark':'light';
+    window.localStorage.setItem('theme',bg)
+    ChangeTheme()
+})
+function ChangeTheme() {
+    if (window.localStorage.getItem("theme" ) == "dark") {
+        document.body.classList.add('dark')
+        elMode.classList.add('btn')
+    }else{
+        document.body.classList.remove('dark')
+        elMode.classList.remove('btn')
     }
+}
+ChangeTheme()
 
-    node.appendChild(newItem);
+const todos =localData || [];
 
-  });
-};
+rendertodos(todos,elList)
+function rendertodos(arr,node){
+    window.localStorage.setItem('todos', JSON.stringify(todos))
+    comletedspan.textContent =todos.filter((el) =>el.isCompleted).length
+  unComletedspan.textContent =todos.filter((el) =>el.isCompleted !==true).length
+    node.innerHTML =""
+elInput.value =""
+    arr.forEach((item)=>{
+        
+        const newitem =document.createElement("li")
+        const newSpan =document.createElement("span")
+        const newInput =document.createElement('input')
+        const buttonElEdit =document.createElement('button')
+        const buttonElDelete =document.createElement('button')
+        
+        elList.appendChild(newitem)
+        
+        newitem.setAttribute("class","list-group-item d-flex  align-items-center justify-content-between flex-grow-1 col-12  ")
+        newSpan.setAttribute('class','flex-grow-1 mx-3')
+        newInput.setAttribute('class','form-check-input m-0 js-check')
+        buttonElEdit.setAttribute("class","btn btn-warning  ms-auto js-edit-btn")
+        buttonElDelete.setAttribute("class","btn btn-danger ms-1 js-delate-btn")
+        buttonElDelete.dataset.todoId =item.id
+        buttonElEdit.dataset.todoId =item.id
+        newInput.dataset.todoId =item.id
+        
+        newSpan.textContent =item.id + ") " + item.text
+newInput.type ='checkbox'
+buttonElDelete.textContent ="Delete"
+buttonElEdit.textContent = "Edit"
 
-elForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
+    newitem.appendChild(newInput)
+    newitem.appendChild(newSpan)
+    newitem.appendChild(buttonElEdit)
+    newitem.appendChild(buttonElDelete)
+    
+if(item.isCompleted){
+    newInput.checked =true
+    newSpan.style.textDecoration = 'line-through'
 
-  const newTodo = {
-    id: todos.length > 0 ? todos.length + 1 : 1,
-    text: elInput.value,
-    isCompleted: false,
-  };
-  todos.push(newTodo);
-  elInput.value = "";
-  renderTodo(todos, elList);
-  spanAll.innerHTML = todos.length;
-  spanUmCompleted.textContent = todos.length;
-});
 
-elList.addEventListener("click", function (evt) {
-  if (evt.target.matches(".js-delete-btn ")) {
-    spanUmCompleted.textContent = todos.length;
-    const todoId = evt.target.dataset.todoID;
-    const findedIndex = todos.findIndex((item) => item.id == todoId);
-    todos.splice(findedIndex, 1);
-    renderTodo(todos, elList);
-    spanAll.innerHTML = 0;
-    spanAll.innerHTML = todos.length;
-    spanUmCompleted.innerHTML = 0;
-    spanUmCompleted.innerHTML = todos.length;
-  }
-  if (evt.target.matches(".js-edit-btn")) {
-    const todoId = evt.target.dataset.todoId;
-    const findedItem = todos.find((item) => item.id == todoId);
-    const newText = prompt("yangi todo kiriting", findedItem.text);
-    findedItem.text = newText;
-    renderTodo(todos, elList);
-  }
-  if (evt.target.matches(".js-check")) {
-    const todoId = evt.target.dataset.todoId;
-    const findedItem = todos.find((item) => item.id == todoId);
-    findedItem.isCompleted = !findedItem.isCompleted;
-    renderTodo(todos, elList);
-    if (findedItem.isCompleted == true) {
-      checkedInput += 1;
+}
+
+ node.appendChild(newitem)
+ elbtngroup.children[0].children[0].innerHTML =todos.length
+    })
+ 
+}
+const noEl =document.createElement('h2')
+noEl.classList.add('text-center')
+elList.appendChild(noEl)
+
+if (todos.length == 0) {
+    noEl.textContent ="Create todos😉"
+    
+}
+
+elForm.addEventListener("submit",(evt) =>{
+    evt.preventDefault()
+    
+   
+    const todosobj = {
+                id:todos.length ? todos[todos.length - 1].id + 1 : 1 ,
+                text:elInput.value,
+                isCompleted:false
+                }
+                todos.push(todosobj)
+            
+rendertodos(todos,elList)
+
+})
+let sum =0
+const newtodos =[]
+const newtodosun =[]
+const Completed =elbtngroup.children[1]
+const ComUn =elbtngroup.children[2]
+
+allBtn.addEventListener('click',(evt)=>{
+    evt.preventDefault()
+    rendertodos(todos,elList)
+})
+
+Completed.addEventListener('click',(evt)=>{
+    evt.preventDefault()
+    const filtred = todos.filter((el) =>el.isCompleted ==true)
+    console.log(filtred);
+    rendertodos(filtred,elList)
+})
+ComUn.addEventListener('click',(evt)=>{
+    evt.preventDefault()
+    const filtred = todos.filter((el) =>el.isCompleted !==true)
+    console.log(filtred);
+    rendertodos(filtred,elList)
+})
+
+
+elList.addEventListener('click',(evt)=>{
+    if(evt.target.matches('.js-delate-btn')){
+        const todoId =evt.target.dataset.todoId;
+        const findindex =todos.findIndex((item) =>item.id == todoId)
+todos.splice(findindex,1)
+rendertodos(todos,elList)
+    };
+    if(evt.target.matches('.js-edit-btn')){
+        const todoId =evt.target.dataset.todoId;
+        console.log(todoId);
+        const finditem =todos.find((item) =>item.id == todoId)
+    const newText = prompt("Create a new todo",finditem.text)
+    finditem.text =newText
+rendertodos(todos,elList)
+    };
+    if(evt.target.matches('.js-check')){
+        const todoId =evt.target.dataset.todoId;
+     const findentItem =todos.find((item) => item.id == todoId)
+     findentItem.isCompleted =!findentItem.isCompleted
+
+rendertodos(todos,elList)
     }
-    if (findedItem.isCompleted == false) {
-      checkedInput -= 1;
-    }
-    spanCompleted.textContent = checkedInput;
-    spanUmCompleted.textContent = todos.length - checkedInput;
-  }
-});
+})
 
-let btnAll = document.querySelector(".all");
-let btnCompleted = document.querySelector(".completed");
-let btnUnCompleted = document.querySelector(".uncompleted");
-let btnBox = document.querySelector(".btn-boxes");
 
-btnBox.addEventListener("click", (evt) => {
-  if (evt.target.matches(".all")) {
-    renderTodo(todos, elList);
-  }
-  if (evt.target.matches(".completed")) {
-    if (btnCompleted.textContent != 0) {
-      let filteredTodo = todos.filter((item) => {
-        if (item.isCompleted) {
-          return item;
-        }
-      });
-      spanCompleted.textContent = filteredTodo.length;
-      renderTodo(filteredTodo, elList);
-    }
-  }
-  if (evt.target.matches(".uncompleted")) {
-    if (btnCompleted.textContent != 0) {
-      let filteredTodo = todos.filter((item) => item.isCompleted == false);
-      spanUmCompleted.textContent = filteredTodo.length;
-      renderTodo(filteredTodo, elList);
-    }
-  }
-});
+allDelade.addEventListener('click',(evt)=>{
+    if(evt.target.matches('.js-delateall')){
+       localStorage.removeItem('todos') ; 
+
+elList.setAttribute('class','text-center size')
+// todos.splice(0,todos.length)
+rendertodos(todos,elList)
+elList.innerHTML ="Todos had been deleted🤥"
+
+    };
+})
+

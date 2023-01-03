@@ -1,0 +1,72 @@
+body{
+    transition: 0.5s;
+}
+
+.dark {
+    background-color: #000000ad;
+    color: #fff;
+}
+
+.light {
+    background-color: white;
+    color: #000;
+}
+
+.size {
+    font-size: 28px;
+}
+
+.dark-light {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    border: none;
+    cursor: pointer;
+    transition: 1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        & img {
+            filter: invert(0%) sepia(1%) saturate(3%) hue-rotate(357deg) brightness(11%) contrast(100%);
+            transition: 0.5s;
+        }
+    }
+
+    &:active {
+        background: #5267ee !important;
+
+        & img {
+            filter: invert(100%) sepia(79%) saturate(2%) hue-rotate(131deg) brightness(127%) contrast(100%);
+            fill: #fff;
+            transition: 0.5s;
+        }
+    }
+}
+
+.btn img {
+    content: url(../images/sun.svg) !important;
+    filter: invert(0%) sepia(1%) saturate(3%) hue-rotate(357deg) brightness(11%) contrast(100%) !important;
+}
+
+.btn{
+transition: 0.5s;
+&:hover{
+    & img{
+    filter: invert(0%) sepia(1%) saturate(3%) hue-rotate(357deg) brightness(151%) contrast(100%) !important;
+    }
+}
+&:active {
+    background: #ec9f1a !important;
+}
+}
+
+input::placeholder,input{
+    text-align: center;
+}
+
+.js-check{
+    cursor: pointer;
+}
